@@ -24,10 +24,20 @@ Route::prefix('v1')->group(function () {
     Route::post('register', [App\Http\Controllers\api\AuthController::class, 'register'])->name('register');
 
     Route::group(['middleware' => 'auth:api'], function () {
+
         Route::post('logout', [App\Http\Controllers\api\AuthController::class, 'logout'])->name('logout');
-        Route::get('user', function (Request $request) {
-            return "test";
+
+        Route::group(['prefix' => 'users'], function () {
+            Route::get('/', [App\Http\Controllers\api\UserController::class, 'index'])->name('users.index');
+            Route::get('/{id}', [App\Http\Controllers\api\UserController::class, 'show'])->name('users.show');
         });
+
+        Route::group(['prefix' => 'gifs'], function () {
+            Route::get('search', [App\Http\Controllers\api\GifController::class, 'search'])->name('gifs.search');
+            Route::get('/{id}', [App\Http\Controllers\api\GifController::class, 'show'])->name('gifs.show');
+            Route::post('/', [App\Http\Controllers\api\GifController::class, 'saveGifToFavorites'])->name('gifs.save');
+        });
+
     });
 
 });
