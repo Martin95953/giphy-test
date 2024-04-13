@@ -24,9 +24,9 @@ class UserRepository
         return $this->model->where($data)->first();
     }
 
-    public function show($userId): User
+    public function show($userId): User | null
     {
-        return $this->model->find($userId)->with('gifs')->first();
+        return $this->model->with('gifs')->find($userId);
     }
 
     public function index(): \Illuminate\Database\Eloquent\Collection

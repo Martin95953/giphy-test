@@ -7,12 +7,13 @@ use App\Http\Requests\AuthRequests\LoginRequest;
 use App\Http\Requests\AuthRequests\RegisterRequest;
 use App\Models\User;
 use App\Repository\UserRepository;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
-    public function login(LoginRequest $request, UserRepository $userRepository): \Illuminate\Http\JsonResponse
+    public function login(LoginRequest $request, UserRepository $userRepository): JsonResponse
     {
         $email = $request->email;
         $password = $request->password;
@@ -26,7 +27,7 @@ class AuthController extends Controller
         return $this->successResponse('Login success', $user);
     }
 
-    public function register(RegisterRequest $request, UserRepository $userRepository): \Illuminate\Http\JsonResponse
+    public function register(RegisterRequest $request, UserRepository $userRepository): JsonResponse
     {
         $name = $request->name;
         $email = $request->email;
@@ -46,13 +47,13 @@ class AuthController extends Controller
         return $user->createToken('UserSession')->accessToken;
     }
 
-    public function logout(Request $request): \Illuminate\Http\JsonResponse
+    public function logout(Request $request): JsonResponse
     {
         $request->user()->token()->revoke();
         return response()->json(['message' => 'Logout']);
     }
 
-    private function successResponse($message,$user): \Illuminate\Http\JsonResponse
+    private function successResponse($message,$user): JsonResponse
     {
         return response()->json([
             'message' => $message,

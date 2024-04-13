@@ -7,10 +7,11 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\GifRequests\SaveGifToFavoritesRequest;
 use App\Http\Requests\GifRequests\SearchGifRequest;
 use App\Models\Gif;
+use Illuminate\Http\JsonResponse;
 
 class GifController extends Controller
 {
-    public function search(SearchGifRequest $request): \Illuminate\Http\JsonResponse
+    public function search(SearchGifRequest $request): JsonResponse
     {
         $query = $request->input('query');
         $limit = $request->limit;
@@ -29,7 +30,7 @@ class GifController extends Controller
         return response()->json($response);
     }
 
-    public function saveGifToFavorites(SaveGifToFavoritesRequest $request): \Illuminate\Http\JsonResponse
+    public function saveGifToFavorites(SaveGifToFavoritesRequest $request): JsonResponse
     {
         $gif = new Gif();
         $gif->gif_id = $request->gif_id;
