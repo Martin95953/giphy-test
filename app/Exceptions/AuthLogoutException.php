@@ -8,7 +8,6 @@ use Throwable;
 
 class AuthLogoutException extends Exception
 {
-    //return response()->api('Logout failed',500,['error' => $e->getMessage()]);
     protected $message = 'Logout failed';
     protected int $status = 500;
     private Throwable $detailedError;
