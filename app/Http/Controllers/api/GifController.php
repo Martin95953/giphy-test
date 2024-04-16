@@ -18,16 +18,16 @@ class GifController extends Controller
         $offset = $request->offset;
 
         $giphy = new GiphyExternalService();
-        $response = $giphy->search($query, $limit, $offset);
-        return response()->json($response);
+        $response = $giphy->search($query, $limit, $offset)->data;
+        return $this->apiResponse('List of gifs',200,$response);
     }
 
-    public function show($gif_id): \Illuminate\Http\JsonResponse
+    public function show($gif_id): JsonResponse
     {
         $giphy = new GiphyExternalService();
-        $response = $giphy->getById($gif_id);
+        $response = $giphy->getById($gif_id)->data;
 
-        return response()->json($response);
+        return $this->apiResponse("Show gif id: $gif_id",200,$response);
     }
 
     public function saveGifToFavorites(SaveGifToFavoritesRequest $request): JsonResponse
@@ -38,6 +38,6 @@ class GifController extends Controller
         $gif->user_id = $request->user_id;
         $gif->save();
 
-        return response()->json(['message' => 'Gif saved to favorites']);
+        return $this->apiResponse('Gif saved to favorites',201, $gif);
     }
 }

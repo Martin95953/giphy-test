@@ -18,14 +18,18 @@ class GiphyExternalService
 
     public function search(string $query, int $limit = 10, int $offset = 0)
     {
-        $response = $this->client->request('GET', 'https://api.giphy.com/v1/gifs/search', [
-            'query' => [
-                'api_key' => $this->api_key,
-                'q' => $query,
-                'limit' => $limit,
-                'offset' => $offset,
-            ]
-        ]);
+        try {
+            $response = $this->client->request('GET', 'https://api.giphy.com/v1/gifs/search', [
+                'query' => [
+                    'api_key' => $this->api_key,
+                    'q' => $query,
+                    'limit' => $limit,
+                    'offset' => $offset,
+                ]
+            ]);
+        } catch (GuzzleException $e) {
+            return $e->getMessage();
+        }
 
         return json_decode($response->getBody()->getContents());
     }
@@ -35,11 +39,15 @@ class GiphyExternalService
      */
     public function getById(string $id)
     {
-        $response = $this->client->request('GET', 'https://api.giphy.com/v1/gifs/' . $id, [
-            'query' => [
-                'api_key' => $this->api_key,
-            ]
-        ]);
+        try{
+            $response = $this->client->request('GET', 'https://api.giphy.com/v1/gifs/' . $id, [
+                'query' => [
+                    'api_key' => $this->api_key,
+                ]
+            ]);
+        } catch (GuzzleException $e) {
+            return $e->getMessage();
+        }
 
         return json_decode($response->getBody()->getContents());
     }

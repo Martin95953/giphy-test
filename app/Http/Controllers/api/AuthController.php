@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers\api;
 
+use App\Exceptions\AuthLoginException;
+use App\Exceptions\AuthLogoutException;
+use App\Exceptions\UserCreateException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AuthRequests\LoginRequest;
 use App\Http\Requests\AuthRequests\RegisterRequest;
@@ -21,10 +24,10 @@ class AuthController extends Controller
         $user = $userRepository->search(['email' => $email]);
 
         if (!$user || !Hash::check($password, $user->password)) {
-            return response()->json(['message' => 'Unauthorized'], 401);
+            throw new AuthLoginException();
         }
 
-        return $this->successResponse('Login success', $user);
+        return $this->apiResponse('Login successful',200,$this->addTokenToUserResponse($user));
     }
 
     public function register(RegisterRequest $request, UserRepository $userRepository): JsonResponse
@@ -33,13 +36,28 @@ class AuthController extends Controller
         $email = $request->email;
         $password = $request->password;
 
-        $user = $userRepository->create([
-            'name' => $name,
-            'email' => $email,
-            'password' => Hash::make($password)
-        ]);
+        try{
+            $user = $userRepository->create([
+                'name' => $name,
+                'email' => $email,
+                'password' => Hash::make($password)
+            ]);
+        } catch (\Exception $e) {
+            throw new UserCreateException($e);
+        }
 
-        return $this->successResponse('Register success', $user);
+        return $this->apiResponse('User created', 201,$this->addTokenToUserResponse($user));
+    }
+
+    public function logout(Request $request): JsonResponse
+    {
+        try {
+            $request->user()->token()->revoke();
+        } catch (\Exception $e) {
+            throw new AuthLogoutException($e);
+        }
+
+        return $this->apiResponse('Logout successful');
     }
 
     private function generateToken(User $user): string
@@ -47,18 +65,12 @@ class AuthController extends Controller
         return $user->createToken('UserSession')->accessToken;
     }
 
-    public function logout(Request $request): JsonResponse
+    private function addTokenToUserResponse($user): array
     {
-        $request->user()->token()->revoke();
-        return response()->json(['message' => 'Logout']);
-    }
-
-    private function successResponse($message,$user): JsonResponse
-    {
-        return response()->json([
-            'message' => $message,
+        return [
             'user' => $user,
-            'token' => $this->generateToken($user)
-        ]);
+            'token' => $this->generateToken($user),
+            'token_type' => 'O Auth2.0'
+        ];
     }
 }

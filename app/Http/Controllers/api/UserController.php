@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\api;
 
+use App\Exceptions\UserNotFoundException;
 use App\Http\Controllers\Controller;
 use App\Repository\UserRepository;
 use Illuminate\Http\JsonResponse;
@@ -13,16 +14,16 @@ class UserController extends Controller
         $user = $userRepository->show($id);
 
         if (!$user) {
-            return response()->json(['message' => 'User not found'], 404);
+            throw new UserNotFoundException();
         }
 
-        return response()->json($user);
+        return $this->apiResponse("Show user ID: $id",200,$user);
     }
 
     public function index(UserRepository $userRepository): JsonResponse
     {
         $users = $userRepository->index();
-        return response()->json($users);
+        return $this->apiResponse('List of users',200,$users);
     }
 
 }

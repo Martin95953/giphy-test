@@ -19,7 +19,7 @@ return new class extends Migration
             $table->text('request_url');
             $table->text('request_body');
             $table->unsignedSmallInteger('response_code');
-            $table->text('response_body');
+            $table->longText('response_body');
             $table->ipAddress('ip_address');
             $table->timestamps();
         });
