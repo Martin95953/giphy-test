@@ -26,4 +26,5 @@ COPY ../../composer.json ./
 # Run composer i
 RUN composer install --no-plugins --no-scripts --prefer-dist
 
-RUN chmod 644 /storage/oauth-*.key
+COPY docker/php/entrypoint.sh /tmp
+ENTRYPOINT ["/tmp/entrypoint.sh"]
