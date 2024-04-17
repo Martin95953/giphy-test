@@ -14,8 +14,16 @@ RUN apt-get update && apt-get install -y \
 # Instalar Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-# Directorio de trabajo principal
+#
 WORKDIR /var/www
 
 # Limpiar cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+
+#
+COPY ../../composer.json ./
+
+# Run composer i
+RUN composer install --no-plugins --no-scripts --prefer-dist
+
+RUN chmod 644 /storage/oauth-*.key
