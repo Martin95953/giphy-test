@@ -16,7 +16,7 @@
 2. Copy the .env.example file to .env
 3. Run all dockerfiles with `docker-compose build`
 4. Run the containers with `docker-compose up -d`
-5. Enter the php container with `docker exec -it giphy-php-1 bash`
+5. Enter the php container with `docker exec -it giphy-test-php-1 bash`
 6. Run the tests with `php artisan test`
 
 ## Uses cases
