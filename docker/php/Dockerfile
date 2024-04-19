@@ -22,6 +22,7 @@ RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
 #
 COPY ../../composer.json ./
+COPY ../../.env.example ./.env
 
 # Run composer i
 RUN composer install --no-plugins --no-scripts --prefer-dist
