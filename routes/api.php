@@ -14,6 +14,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::get('/', function () {
+    return response()->json(['message' => 'Gif API test'], 200);
+})->name('api');
+
 Route::get('unauthorized', function () {
     return response()->json(['message' => 'Unauthorized'], 401);
 })->name('unauthorized');

@@ -2,6 +2,7 @@
 
 namespace App\ExternalServices;
 
+use App\Exceptions\GifApiException;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 
@@ -28,7 +29,7 @@ class GiphyExternalService
                 ]
             ]);
         } catch (GuzzleException $e) {
-            return $e->getMessage();
+            $this->generateApiGifException($e);
         }
 
         return json_decode($response->getBody()->getContents());
@@ -39,16 +40,20 @@ class GiphyExternalService
      */
     public function getById(string $id)
     {
-        try{
+        try {
             $response = $this->client->request('GET', 'https://api.giphy.com/v1/gifs/' . $id, [
                 'query' => [
                     'api_key' => $this->api_key,
                 ]
             ]);
+            return json_decode($response->getBody()->getContents());
         } catch (GuzzleException $e) {
-            return $e->getMessage();
+            $this->generateApiGifException($e);
         }
+    }
 
-        return json_decode($response->getBody()->getContents());
+    private function generateApiGifException($e) : void
+    {
+        throw new GifApiException($e->getCode(), $e->getMessage(), $e->getResponse()->getBody()->getContents());
     }
 }
