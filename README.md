@@ -13,8 +13,11 @@
 ## Installation
 
 1. Clone the repository
-2. Run all dockerfiles with `docker-compose build`
-3. Run the containers with `docker-compose up -d`
+2. Copy the .env.example file to .env
+3. Run all dockerfiles with `docker-compose build`
+4. Run the containers with `docker-compose up -d`
+5. Enter the php container with `docker exec -it giphy-php-1 bash`
+6. Run the tests with `php artisan test`
 
 ## Uses cases
 ![](readme/use_cases_diagram.svg)
